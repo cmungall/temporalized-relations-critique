@@ -80,14 +80,18 @@
   detailed documentation.
 
   I conclude that these relations should not be adopted by ontology
-  developers. Migrating to these relations would be an expensive,
-  error-prone process that would alienate the user base of an
-  ontology, and the end result would be ontologies that are either
-  formally incorrect or too weak to perform required inferences.
+  developers as a replacement for existing relations. Migrating to
+  these relations would be an expensive, error-prone process that
+  would alienate the user base of an ontology, and the end result
+  would be ontologies that are either formally incorrect or too weak
+  to perform required inferences.
 
 \end{abstract}
 
 \section{Introduction}
+
+\subsection{The OBO Relations ontology}
+
 
 The OBO relations ontology (\OBOREL) defined a set of core relations
 for use in biological ontologies, including \isA, \partOf\ and
@@ -108,55 +112,76 @@ $
 $
 
 A relationship of this form is known as \emph{permanent generic
-  parthood}.
+  parthood}. It allows for nuclei to be passed from one cell to
+another, so long as the nucleus remains part of some cell.
 
 The other notable aspect of \OBOREL\ was the distinction between type
 (class) level and instance level relations. Each type-level relation
 connects a pair of classes and typically is defined according to an
 \pr{ALL-SOME-ALLTIMES}\ pattern - for example, every cell nucleus is
-part of some cell at all times. The stated use of class level
-relations causes some confusion when using OWL, which does not support
-these kinds of class-level relationships. Instead the relationship
-between a nucleus and a cell in OWL is explicitly quantified, but
-without a time argument, as all relations in OWL are binary: For
-example, \emph{every cell nucleus is part of some cell}. As of 2010,
-the official semantics of OBO format have been as a subset of OWL, so
-what applies to OWL necessarily applies to OBO.
+part of some cell at all times. This causes some confusion when using
+OWL, which does not support these kinds of class-level
+relationships. Instead the relationship between a nucleus and a cell
+in OWL is explicitly quantified, but without a time argument, as all
+relations in OWL are binary: For example:
 
-This impedance mismatch between the OWL interpretation and the
-\OBOREL\ account has been problematic in providing a consistent
-formal account of relations that is consistent with OWL semantics,
-although it is not clear that this has caused a problem for many
-ontology developers or users. The standard approach has been to use a
-set of binary relations as specified in Table
-\ref{tab:characteristics-atemporal}, and to assume an \OBOREL\ type
-interpretation for time.
+\begin{verbatim}
+'cell nucleus' SubClassOf part_of some cell
+\end{verbatim}
+
+As of 2010, the official semantics of OBO format
+have been as a subset of OWL, so what applies to OWL necessarily
+applies to OBO.
+
+This impedance mismatch between the OWL interpretation (which can be
+considered ``atemporal'') and the \OBOREL\ account has been
+problematic in providing a consistent formal account of relations that
+is consistent with OWL semantics, although it is not clear that this
+has caused a problem for many ontology developers or users. The
+standard approach has been to use a set of binary relations as
+specified in Table \ref{tab:characteristics-atemporal}, and to assume
+an \OBOREL\ type interpretation for time.
+
+\subsection{BFO2 and temporalized relations}
 
 As part of the release process for the OWL translation of version 2 of
 the Basic Formal Ontology (BFO)\cite{Grenon2004}, a number of people
 explored different strategies for unifying OWL binary properties with
 the ternary relations in the BFO2 reference
-specification\cite{Graz}. The goal was to find a way of representing
+specification\cite{Grewe}. The goal was to find a way of representing
 the temporal aspects of BFO2 relations in OWL in a formally satisfying
 way.  One such strategy is the \emph{temporalized relations} (TR)
 strategy, in which each reference relation relating continuants has
 two or more OWL cognates, \pr{rel-at-some-times} and
 \pr{rel-at-all-times}. This strategy has been adopted as the official
-one for the OWL translations of BFO2.
+one for the OWL translations of BFO2\cite{Graz}.
+
+\subsection{Outline}
 
 In this review I do not attempt to compare or even describe the
 different modeling possibilities; instead I focus purely on the
-temporalized relations strategy, as there is pressure to make this the
+temporalized relations strategy, due to pressure to make this the
 standard for OBO library ontologies. I first provide an outline of
 temporalized relations, drawing on the existing release notes and
-documentation, attempting to fill some gaps. I then present the major
-problems posed by these relations: (1) the relations fail to capture
-the biological reality, forcing ontology editors to make a choice
-between two unsatisfactory options, and ruling out the use of
-non-rigid classes (2) the relations are confusing for both users and
-experienced ontology editors. These two problems are related, in that
-even experienced ontology editors may not understand the choices they
-are being asked to make with TRs.
+documentation, attempting to fill some gaps and provide additional
+explanations of some of the complexities. I then present the major
+problems posed by these relations:
+
+\begin{enumerate}
+
+\item Temporalized relations fail to capture the biological reality, forcing
+  ontology editors to make a choice between two unsatisfactory models.
+
+\item Within the model there is no facility for modeling important classes that lack
+  the 'rigidity' criterion.
+
+\item Temporalized relations are confusing for both users and
+  experienced ontology editors.
+\end{enumerate}
+
+These problems are inter-related; even experienced ontology editors
+may not understand the choices they are being asked to make when
+migrating to temporalized relations.
 
 Finally I end with some specific recommendations regarding the
 temporalized relation strategy in general and BFO2 specifically.
@@ -164,8 +189,10 @@ temporalized relation strategy in general and BFO2 specifically.
 My intentions are to make this review accessible to a wide audience,
 and to keep logical formulas to a minimum. This is difficult because
 one of the problems with the TR strategy is that it forces complexity
-upon the user and developer of an ontology, requiring some discussion
-of that complexity in an attempt to explain the flaws.
+upon both the users and developers of an ontology, necessitating some
+discussion of that complexity in order to explain why it does not
+yield the intended benefits. I have annexed some of the finer grained
+details into an appendix.
 
 \begin{table}
 \begin{tabular}{ | p{2.5cm} | p{1cm} | p{1cm} | p{2.5cm} | }
@@ -179,7 +206,7 @@ of that complexity in an attempt to explain the flaws.
 \adjacentTo\ & No & Yes &  \\
 \hline
 \end{tabular}
-\caption{Relation characteristics, atemporal. These are the characteristics of the instance level relations in the current RO}
+\caption{Relation characteristics, atemporal. These are the characteristics of the instance level relations in the current RO (http://obo-relations.googlecode.com)}
 \label{tab:characteristics-atemporal}
 \end{table}
 
@@ -238,19 +265,21 @@ $$
 \CellNucleus\ \pr{SubClassOf}\ \partOfAtAllTimes\ \pr{some}\ \Cell
 $$
 
-This may seem to be the same as the statement ``every cell nucleus is part
-of some cell at all times''. We might even be able to automatically
-translate an ontology written using the \OBOREL\ interpretation into
-TRs. \emph{However, these are NOT the same, and an understanding of
-  why is crucial to correct usage of these relations and an
-  understanding of the consequences of using them}.
+This may seem to be the same as the statement ``every cell nucleus is
+part of some cell at all times''. We might even be able to
+automatically translate an ontology written using the \OBOREL\
+interpretation into TRs. \emph{However, these are NOT the same, and an
+  understanding of why this is so is crucial if these relations are to
+  be used correctly, and to understand the long-term consequences of
+  using them}.
 
 It is not the case that TRs are the same as what has come before, but
-with harder to read labels. \emph{The semantics are fundamentally
+with longer labels. \emph{The semantics are fundamentally
   different}. Whereas \OBOREL\ allowed permanent generic parthood (in
 which a nucleus must always be part of a cell, but can be transferred
 between cells), with TRs that possibility is disallowed. See Table
-\ref{tab:fol-class-axioms} in the appendix for details.
+\ref{tab:fol-class-axioms} in the appendix for details. I will return
+to this in the evaluation.
 
 The fact that these are different is of utmost importance to how
 ontologies are created, and affects the \emph{characteristics} of
@@ -269,11 +298,13 @@ useful for instance level reasoning, and for finding errors in complex
 ontologies.
 
 When translating a RR to a TR, it may not be immediately clear what
-properties of the RR should be carried over to the TR. Ideally we
-would be able to prove that the RR and TR are consistent, although the
-proof may be obvious to an expert logician. Here I use \partOf\ as an
-illustrative example, although each relation may require individual
-examination for its properties.
+properties of the RR should be carried over to the TR. If a reference
+relation $R$ has an inverse $R'$, it doesn't follow that the
+temporalized versions will be inverses. Ideally we would be able to
+prove that the RR and TR are consistent, although the proof may be
+obvious to an expert logician. Here I use \partOf\ as an illustrative
+example, although each relation may require individual examination for
+its properties.
 
 Table \ref{tab:characteristics-temporalized} shows some of the
 property characteristics of the various forms of the continuant
@@ -335,7 +366,7 @@ declared for the \atSomeTimes\ form and not the \atAllTimes\ form. In
 contrast to the \partOf\ and \emph{transitivity}, here it is the
 \emph{weaker} form of relation that inherits the characteristic.
 
-\subsubsection{Properties}
+\subsubsection{Sub Properties}
 
 We assume a hierarchy in which \atSomeTimes\ is the most general, with
 \atAllTimesForWhichSubjectExists\ intermediate, and \atAllTimes\ most
@@ -410,12 +441,12 @@ inheresInAtAllTimes.
 \section{Evaluation}
 
 \subsection{Temporalized Relations do not reflect the intentions of
-  ontology editors}
+  ontology editors or the underlying biology}
 
 TRs present many challenging problems. For example, when converting an
 anatomy ontology that has been modeled traditionally using the
 relations in table \ref{tab:characteristics-atemporal}, the ontology
-editor must make a choice on a per-relationship basis as to which of
+editor must make a choice on a case by case basis as to which of
 the relations in \ref{tab:characteristics-temporalized} should be
 used.
 
@@ -430,28 +461,41 @@ here is the relationship between a cell nucleus and a cell. At any
 moment in time, a given cell nucleus is by definition part of some
 cell\footnote{we would consider extruded nuclei to be transformations
   of cell nuclei, but instantiating a different class}. However,
-\emph{this need not be the same call throughout the lifetime of the
+\emph{this need not be the same cell throughout the lifetime of the
   nucleus}.
 
 In contrast, if the \partOfAtAllTimes\ TR is used then the
 interpretation is that the cell nucleus is always part of the same
 cell. This interpretation can be proved to be formally wrong in cells
-that undergo cell division\ref{CellDiv}. This is because the cell
-nucleus is always part of a cell, \emph{but not the same cell}.
+that undergo cell division\cite{CellDiv}. This is because in reality
+the cell nucleus is always part of a cell, \emph{but not the same
+  cell}. With \partOfAtAllTimes\, there is no ``migration'' allowed -
+a nucleus is always part of the same cell.
 
-The ontology editor can not then choose to use \partOfAtAllTimes\
-without making a false statement. They may then decide to
-use \partOfAtSomeTimes. Such a usage would be formally valid, but
-incomplete from the point of view of useful reasoning. This is because
-the weaker \atSomeTimes\ form lacks the transitivity characteristic.
+Understanding the consequences of incorrectly modeling the
+relationship in this way are not straightforward. In some situations
+there may be no severe problems, if the ontology is not used for
+instance data. However, it would be unusual to adopt a far more
+complex formalism (TRs) in the name of formality only to arrive at an
+ontology that is formally incorrect.
+
+Given that the ontology editor can not use \partOfAtAllTimes\ without
+making a false statement, they must choose a weaker qualified version
+of \partOf\ such as \partOfAtSomeTimes. Such a usage would be formally
+valid, but incomplete from the point of view of useful reasoning. This
+is because the weaker \atSomeTimes\ form lacks the transitivity
+characteristic. I assume there to be no disagreement that this is a
+completely unsatisfactory solution, as most ontologies are dependent
+on parthood transitivity.
 
 A third possibility is to use
 the \partOfAtAllTimesForWhichWholeExists\ form, but this would also be
-false (note the above proof needs to be extended to cover this case).
+false [note the above proof needs to be extended to cover this case].
 
-The ontology editor requires the permanent generic form in order to be
-both accurate and to get the required inferences. However, this form
-is specifically excluded in the TR strategy.
+In the nucleus-cell case, the ontology editor requires the permanent
+generic form in order to be both accurate and to get the required
+inferences. \emph{However, this form is specifically excluded in the
+  TR strategy}.
 
 The cell nucleus example is the standard one, because it is central to
 all of eukaryotic biology. It is by no means the only such
@@ -460,7 +504,7 @@ from one carrier to another.  Enumerating a list of examples is
 difficult because the instance level identity conditions may not be
 clear. 
 
-the problem is not limited to parthood relations. Use of TRs requires
+The problem is not limited to parthood relations. Use of TRs requires
 that all continuant relations are temporalized. This includes
 relations used to classify structures by phenotype.
 
@@ -548,12 +592,49 @@ constraints that ontology developers should be fully aware of.
 
 The most striking feature of an ontology that uses the TR strategy is
 the complexity. Whereas using traditional modeling, we may have has a
-single parthood relation, we now have three.
+single parthood relation, we now have three. Both users and developers
+have to have a strong understanding of these to use them correctly.
+
+\subsubsection{Multiple levels of quantification}
+
+Another source of complexity is that ontology editors now have to
+handle an extra layer of quantification. Consider the possible ways to
+model the relationship between a population of organisms and an
+organism:
+
+\begin{verbatim}
+population SubClassOf 
+  has-part-at-some-time some organism
+population SubClassOf 
+  has-part-at-all-times some organism
+population SubClassOf 
+  has-part-at-all-times-that-part-exists some organism
+population SubClassOf 
+  has-part-at-some-time only organism
+\end{verbatim}
+
+In each case there is in fact three levels of quantification. The
+first level is the OWL subclass axiom, which states that the condition
+holds for ALL instances of a population. Also within the scope of OWL
+is the final SOME or ONLY quantifier. Finally, embedded within the
+relation is an additional layer than is opaque to OWL reasoners (and
+thus harder to use standard tools to check), i.e. the temporal
+qualification.
+
+This is in contrast to the simpler, well-documented kind of atemporal
+quantification ontology developers perform at the moment.
+
+I have a great deal of experience in training and assisting ontology
+developers in the use of tools such as reasoners and in making the
+transition to OWL. In my estimation, the level of complexity TRs exert
+is simply too much.
+
+\subsubsection{Migration is complex and will be error-prone}
 
 In theory some of this complexity could be tamed by additional tooling
 (although it is not clear who has the resources to implement
-this). However, even if this can be hidden from the user, the ontology
-developer is forced to wrestle with the complexity.
+this). However, even if this complexity can be hidden from the user,
+the ontology developer is forced to wrestle with the complexity.
 
 This complexity first manifests when an ontology developer chooses to
 migrate from a traditionally modeled ontology using relations from
@@ -561,59 +642,115 @@ table \ref{tab:characteristics-atemporal}, assuming an \OBOREL\
 interpretation.
 
 For each axiom that uses a relation that has multiple variants in TR
-form, the developer must make a choice of which one to use....
+form, the developer must make a choice of which of the 3 variants to
+use. Currently there is no documentation or guidance on how they
+should do this.
 
-BAD SMELL
+A conservative strategy would be to convert all continuant relations
+to the \atSomeTimes\ form. This would result in the ontology being far
+less useful for inference (due to the loss of properties such as
+transitivity). However, we might expect it to be at least valid, since
+the relation is weaker.
+
+In fact this is not universally safe. Consider the OWL axiom:
+
+\begin{verbatim}
+(\partOf\ \some\ \pr{nucleus}) \pr{DisjointWith} (\partOf\ \some\ \pr{cytoplasm})
+\end{verbatim}
+
+Converting these to \atSomeTimes\ would actually result in an axiom
+that is \emph{too strong}. Conversely, converting to \atAllTimes\
+would be too \emph{weak}, because it would admit the possibility of
+migratory structures being part of two spatially disconnected
+locations at the same time (so long as they weren't permanently part
+of each). It is not clear how the ontology maintainer should convert
+this axiom -- \emph{because all choices are suboptimal}.
+
+Even in cases where there is an optimal way to translate to TRs,
+performing the conversion requires an ontology developer who has a
+strong understanding of the domain and of the logic.
 
 \subsection{Case study: HDOT}
 
-
-
+...
 
 \section{Discussion}
+
+\subsection{Bad smells}
+
+Software engineers have a concept of a ``bad smell'' in code. This is
+often applied when a piece of software or library seems overly baroque
+or complex. Whilst this sense may be at least in part subjective, many
+software engineers work on this intuitive level, and will typically
+avoid using a piece of software if they perceive it to have a ``bad
+smell''. Sometimes there is external pressure to use the software in
+question - this can sometimes prolong its life but in general software
+engineering solutions perceived to have this quality are typically
+replaced by something more efficient and simpler.
+
+From various conversations with experienced ontology engineers,
+bioinformaticians and logicians, I feel confident in saying that the
+TR solution as embodied in BFO2 is generally perceived to have a ``bad
+smell'' in the same way. I include this as a discussion point rather
+than part of a formal evaluation since I can't produce hard evidence
+of this quality. However, proponents of the TR solution ignore this
+engineers' intuition at their peril: it hinders the adoption of the
+relations as standards, and even if this is forced from above,
+developers will work around them. I know of various groups with plans
+to simply rewrite TRs back into their standard form should they become
+adopted.
 
 \subsection{Recommendations}
 
 \subsubsection{Do not use} My primary recommendation is that
-Temporalized Relations should not be used in their current
-form. Ontologies should not migrate to them.
+Temporalized Relations should not be used as a replacement for
+existing atemporal relations. Ontologies should in general not migrate
+to them.
 
 \subsubsection{Documentation} The TR strategy needs much more
 documentation if ontology developers are to use TRs. Even if TRs are
-abandoned in their current form (as I recommend), documentation would
-be useful to be able to help achieve consensus on this matter.
+abandoned in their current form (as I recommend), more documentation
+would be useful to be able to help achieve consensus on this matter.
 
 \subsubsection{Alternate strategies} Given the inherent limitations
 and complexity of TRs, adequate consideration should be given to
 alternate strategies such as Temporally Qualified Continuants
-(TQCs). The ``null'' strategy of continuing to use simple OWL object
-properties as if they has a \OBOREL\ interpretation should be the
-default strategy until an adequate replacement is found.
+(TQCs). The ``default'' strategy of continuing to use simple OWL
+object properties as if they has a \OBOREL\ interpretation should be
+the default strategy until an adequate replacement is found.
 
 \subsubsection{Use cases} If adopted, TRs will require tremendous
-effort in ontology migration, documentation, tooling. There is little
-to motivate ontology developers to do this as the existing strategy
-works for them. The main motivating factor seems to be a desire for
-formal correctness, at the expense of usability and biological
-correctness.
+effort in ontology migration, documentation and tooling. There is
+little to motivate ontology developers to do this as the existing
+default strategy works for them. The main motivating factor seems to
+be a desire for formal correctness, at the expense of usability and
+biological correctness. 
 
-\subsubsection{Road map}
+\subsubsection{Road map} The existing TR proposal embodied in the BFO2
+Graz release is not complete. For example, of non-rigid classes, the
+release notes state that ``we are working on [non-rigid classes] for
+the future''. There shoould be a roadmap indicating when these
+solutions are expected to transpire. Ontology developers should not be
+expected to commit production ontologies to an experimental project
+with no roadmap.
 
-\subsubsection{Smooth transition}
+\subsubsection{Smooth transition} If TRs are to be adopted, there
+needs to be some incremental transition plan for migration.
 
 \section{Conclusions}
 
 Temporalized Relations would be a fundamental change to the way
 relationships are modeled in ontologies. They would introduce
-additional complexity.
+significant additional complexity to both users and developers of
+ontologies.
 
 Some of these costs could be justified if Temporalized Relations were
 on a path towards making ontologies more biologically
-accurate. However, due to the built in lack of support for permanent
-generic parthood and non-rigid classes, migrating to Temporalized
-Relations would lead to ontologies becoming \emph{less} accurate. My
-recommendation is unambiguous in its rejection of the use of
-Temporalized Relations in biological ontologies.
+accurate. However, there are no mativating use cases for this
+transition, and in fact migrating to Temporalized Relations would lead
+to ontologies becoming \emph{less} accurate, in addition to more
+confusing. My recommendation is unambiguous in its rejection of the
+use of Temporalized Relations in biological ontologies.
 
 \section*{Acknowledgments}
 
@@ -628,6 +765,119 @@ Temporalized Relations in biological ontologies.
 
 \newpage
 \section*{Appendix}
+
+\subsection{Non-rigid classes}
+
+A class $c$ is non-rigid if there exists an instance $i$ that exists
+at $t_1$ and exists at $t_2$, and it is not the case that $i$
+instantiates $c$ at $t_1$, and $i$i instantiates $c$ at $t_2$. $t_1$
+may precede or succeed $t_2$.
+
+\begin{enumerate}
+
+\item 'human with Parkinson's disease' -- a person is not born with
+  Parkinsons (although they may be born with genes that
+  predispose). It is possible for a human being $i$ who exists at
+  $t_1$ and $t_2$ to not instantiate human-with-PD at $t_1$ and to
+  instantiate human-with-PD at $t_2$. Therefore human-with-PD is
+  non-rigid.
+
+\item 'female organism' -- Some organisms (e.g. some species of
+  arthropod) can change sex during their lifetime. It is possible for
+  some such instance $i$ to instantiate 'male organism' at $t_1$ and
+  then instantiate 'female organism' at $t_2$. If these classes are
+  disjoint, then 'female organism' is non-rigid. Note that it is
+  possible to define different sex concepts (gender, karyotypic sex,
+  biological sex, ...), different arguments can be made about the
+  rigidity of the corresponding material entity classes.
+
+\item 'infected lung' -- it is possible for a lung $i$ to have the
+  quality of being infected (alternatively: be the location of a
+  population of invading organisms) at $t_1$, and then non-infected at
+  $t_2$. Therefore the class 'infected lung' is non-rigid.
+
+\item 'professor' -- It is possible for an individual $i$ to
+  instantiate 'human with professor role' at one time, and then not
+  instantiate this at some later time. Therefore 'professor' (as a
+  material entity) is non-rigid. professorhood is best represented as
+  a role that can be gained or lost.
+
+  \item 'human patient' -- see 'professor'
+
+  \item 'oocyte' -- 
+
+  \item 'fractured bone' -- It is possible for some bone $i$ to
+    instantiate the class 'non-fractured bone' at $t_1$ and then
+    'fractured bone' at some later time $t_2$. Therefore 'fractured
+    bone' (in the sense of a material entity - a bone that has the
+    quality of being fractured) is a non-rigid class. An argument can
+    be made that $i$ ceases to exist when it becomes fractured, and is
+    replaced by a new individual $i_2$ at $t_2$. This could certainly
+    be argued for severe breakages, where $i$ is replaced to two or
+    more bone shards.
+
+  \item 'happy human' -- It is possible for a human being $i$i to
+    instantiate the class 'happy human' at $t_1$ (by virtue of bearing
+    a happy disposition) and then 'unhappy human' at $t_2$. Therefore
+    'happy human' is a non-rigid class.
+
+  \item 'fetal heart' -- it is possible for a heart $i$ to instantiate
+    'fetal heart' at $t_1$ and and then 'newborn heart' at
+    $t_2$. Therefore 'fetal heart' is non-rigid. An argument can be
+    made that $i$ is ceases to exist and is replaced by a new instance
+    $i_2$ at $t_2$, but this would be unusual. An argument could also
+    be made that there is no need for a class 'fetal heart' - the
+    concept should be described using a rigid class 'heart' together
+    with an occurrent 'fetal stage'. However, this would be a severely
+    onerous penalty on many anatomy ontologies which frequently use
+    stage as a differentia.
+
+  \item 'neural crest cell' --
+
+  \item 'open heart valve' -- it is possible for some heart valve $i$
+    to instantiate 'open heart valve' at $t_1$ (by virtue of bearing
+    the quality 'open' at this time, or, alternatively, by virtue of
+    their being a lumen in the vessel) and then to instantiate 'closed
+    heart valve' at $t_2$. Therefore 'open heart valve' is a non-rigid
+    class.
+
+  \item 'gravid uterus' -- it is possible for some uterus $i$ to
+    instantiate a class 'non-gravid uterus' at time $t_1$ (by virtue
+    of not being the location of a developing organism), and then
+    instantiate a class 'gravid uterus' at some later time
+    $t_2$. Therefore 'gravid uterus' is a non-rigid class.
+
+  \item 'phosphorylated EGFR protein' -- there are different ways to
+    model this depending on identity conditions on the instance level
+    (we take identity conditions on the class level as being
+    uncontroversial - class equivalence is determined by structure for
+    molecules). Using model $M_1$, we assume there to be a single
+    instance $i$ of an EGFR protein which transitions through
+    different states. Here, $i$ instantiates 'unphosphorylated EGFR'
+    at $t_1$ and then later the same instance $i$ instantiated
+    'phosphorylated EGFR' at $t_2$. Under this model, 'phosphorylated
+    EGFR' is non-rigid. We can model this differently - call this
+    $M_2$. Here $i_1$ instantiates 'unphosphorylated EFGR' at
+    $t_1$. Then, as a phosphate group is added at $t_2$, $i_1$ ceases
+    to exist and its place is taken by $i_2$, which instantiates
+    'phosphorylated EGFR'. Here $i_1$ and $i_2$ might be related via
+    some relation such as 'transformation of'. This illustrates that
+    any non-rigid class can be made rigid by changing instance-level
+    identity conditions. At one extreme we can see life as a series of
+    snapshots, with individuals living for an instant before being
+    replaced by a doppleganger.
+
+  \item 'cytoplasmic NFkB' -- this is similar to the EGFR case. Here
+    the differentia is location. No structural change need take place.
+
+  \item any leaf node from PATO -- Examples: square, open,
+    cylindrical, hot, cold. This is a multi-faceted topic and a
+    thorough discussion should wait until there is documentation on
+    how to model quantities in BFO2.
+
+\end{enumerate}
+
+\subsection{First order logic axioms}
 
 This section contains some additional material on the first order
 logic axioms supporting the Temporalized Relations. 
