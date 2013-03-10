@@ -52,7 +52,7 @@
 \begin{document}
 \firstpage{1}
 
-\title{A critique of rigid temporalized relations}
+\title{A critique of temporalized relations}
 
 \author{Christopher J. Mungall\,$^{1}$\footnote{to whom correspondence should be addressed}}
 \address{$^{1}$Genomics Division, Lawrence Berkeley National Laboratory, MS84R017, 1 Cyclotron Road, Berkeley, CA 94720 USA}
@@ -281,13 +281,12 @@ It is not the case that TRs are the same as what has come before, but
 with longer labels. \emph{The semantics are fundamentally different}.
 This has major effects on both the OWL axioms that are crucial for
 reasoning over ontologies, and on the FOL reading of what the axioms
-in the ontology means. See table \ref{tab:fol-class-axioms} in the
-appendix to see how the FOL for TRs different from those of
-\OBOREL\. For readers not versed in FOL, I will next provide an
-outline of how the TR semantics affect the OWL \emph{characteristics}
-of these relations in some ways that might seem surprising. I will
-return to this in the evaluation to show how this affects real-world
-ontology modeling.
+in the ontology means. See \textbf{table \ref{tab:fol-class-axioms}}
+in the appendix to compare the FOL for TRs vs \OBOREL. For readers not
+versed in FOL, I will next provide an outline of how the TR semantics
+affect the OWL \emph{characteristics} of these relations in some ways
+that might seem surprising. I will return to this in the evaluation to
+show how this affects real-world ontology modeling.
 
 \subsection{Object property characteristics}
 
@@ -562,8 +561,7 @@ required inferences. However, this form is specifically excluded in
 the existing TR strategy, forcing the ontology editor to make
 statements that are formally incorrect.
 
-\subsubsection{Temporalized relations do not work for structures that
-  change}
+\subsubsection{Temporalized relations are ill-equipped to model change}
 
 The constraints imposed by TRs are wider than the lack of
 permanent-generic relationships, as exemplified in the nucleus-cell
@@ -840,20 +838,27 @@ details.
 Based on my evaluation I make the following three primary
 recommendations:
 
-\subsubsection{Do not use.} My primary recommendation is that
-Temporalized Relations should not be used as a replacement for
-existing atemporal relations. Ontologies should not migrate their
-production branch to TRs.
+\begin{enumerate}
 
-\subsubsection{Use the traditional approach.} Ontology developers should
-continue using the relations that they have been using successfully
-for years. These relations should be given stable identifiers and be
-resolvable. If a clearly better approach arrives then like any
-identifier they can be obsoleted, but this should only happen when the
-new approach is demonstrably superior.
+\item \textbf{Do not use.} My primary recommendation is that
+  Temporalized Relations should not be used as a replacement for
+  existing atemporal relations. Ontologies should not migrate their
+  production branch to TRs.
 
-\subsubsection{Change priorities.} Dogma should not trump the
-requirements of users of ontologies.
+\item \textbf{Use the traditional approach.} Ontology developers
+  should continue using the relations that they have been using
+  successfully for years. These relations should be given stable
+  identifiers and be resolvable. If a clearly better approach than the
+  default strategy arrives then like any identifier they can be
+  obsoleted, but this should only happen when the new approach is
+  demonstrably superior.
+
+\item \textbf{Change priorities.} Dogma should not trump the
+  requirements of users of ontologies. A clear reading of the OWL in
+  terms of the FOL is laudable but may have to be postponed.
+
+\end{enumerate}
+
 
 I am not against the continued investigation of TRs as a long term
 strategy. My additional recommendations here are:
@@ -891,6 +896,10 @@ permanent generic parthood are forthcoming, but there is no timeline.
 come with a migration plan. I have experience in migration from legacy
 systems (for example, the transition from obo-format to OWL). This is
 rarely smooth, the process needs actively managed.
+
+\subsubsection{Take advantage of FOL..} If the primary motivating
+factor for a new approach is an FOL reading then the success of the
+approach should be determined based on some machine-readable FOL.
 
 \subsubsection{Provide tools..} If the use of a different approach
 requires additional tools for ontology editors to work effectively,
