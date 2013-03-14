@@ -147,7 +147,23 @@ an \OBOREL\ type interpretation for time.
 One of the stated goals of the group developing the OWL translation of
 version 2 of the Basic Formal Ontology (BFO)\cite{Grenon2004} was to
 have relations in OWL handled so as to have a clear First-Order Logic
-(FOL) reading according to the BFO reference\cite{BFO2Ref}. The BFO
+(FOL) reading according to the BFO reference\cite{BFO2Ref}:
+
+\begin{quotation}
+  A clear reading of the OWL version in terms of BFO reference. A
+  translation is a mapping from the OWL model - axioms, entities,
+  relations, etc. To the formal language used in the reference,
+  currently FOL. A reading can be considered a data transformation
+  that takes asserted and inferred axioms and results in FOL using
+  types defined in BFO2 reference. This translation should be complete
+  - no assertions in the OWL file can be left untranslated. In our
+  current version, the most obvious missing reading is of binary
+  relations with the same name as the ternary time-indexed relations
+  in BFO2 reference
+\end{quotation}
+
+
+The BFO
 group explored different strategies for unifying OWL binary properties
 with the ternary relations\cite{Grewe}.  One such strategy is the
 \emph{temporalized relations} (TR) strategy, in which each reference
@@ -173,7 +189,7 @@ then present the major problems posed by these relations:
 \item Temporalized relations are logically flawed. Their meaning is
   opaque to OWL, decreasing our ability to use reasoners to detect
   errors and build ontologies. The approach is inherently constrained,
-  and fail to capture dynamic situations, forcing ontology editors to
+  and fails to capture dynamic situations, forcing ontology editors to
   make a choice between two unsatisfactory models. 
 
 \item Temporalized relations would lead to an unacceptable increase in
@@ -726,7 +742,7 @@ an organism:
 2. population SubClassOf 
   has-part-at-all-times some organism
 3. population SubClassOf 
-  has-part-at-all-times-that-part-exists
+  has-part-at-all-times-that-whole-exists
     some organism
 4. population SubClassOf 
   has-part-at-some-time only organism
@@ -743,7 +759,7 @@ use standard tools to check).
 This is in contrast to the simpler, well-documented kind of atemporal
 quantification ontology developers perform at the moment.
 
-(Note that \emph{none} of the axioms above are correct, given that
+(Note that \emph{none} of the axioms above are adequate, given that
 populations gain and lose members over time - permanent generic
 parthood is required).
 
@@ -896,6 +912,11 @@ permanent generic parthood are forthcoming, but there is no timeline.
 come with a migration plan. I have experience in migration from legacy
 systems (for example, the transition from obo-format to OWL). This is
 rarely smooth, the process needs actively managed.
+
+\subsubsection{Perform a cost-benefit analysis for adopting the
+  solution..}
+See\footnote{http://jamesmaloneebi.blogspot.co.uk/2012/07/why-choosing-ontologies-should-not-be.html}.
+
 
 \subsubsection{Take advantage of FOL..} If the primary motivating
 factor for a new approach is an FOL reading then the success of the
@@ -1125,24 +1146,28 @@ OWL class axioms using the FOL relations.
 
 
 \begin{table}
-\begin{tabular}{ | p{3cm} | p{4cm} | }
+\begin{tabular}{ | p{1cm} | p{6cm} | }
 \hline
 \textbf{Relation} & \textbf{Axiom}  \\
 \hline
-$$x\ \pr{part-of-}\ \atAllTimes\ y$$ &
-        \tbleqn{
- & \dimp  \A t \existsAt(x,t) \imp\ \\
- & \existsAt(y,t), \partOf(x,y,t)
+all &
+\tbleqn{
+ & x\ \partOfAtAllTimes\ y \\
+ & \dimp  (\A t \existsAt(x,t) \imp\ \\
+ & \existsAt(y,t), \partOf(x,y,t))
 } \\
 \hline
-$$x\ \pr{part-of-}\ \atSomeTimes\ y$$ &
-        \tbleqn{
- & \dimp  \E t \existsAt(x,t) \imp\ \\
- & \existsAt(y,t), \partOf(x,y,t)
+some &
+\tbleqn{ 
+x\ & \partOfAtSomeTimes\ y \\        
+   & \dimp  (\E t \existsAt(x,t) \imp\ \\
+   &              \existsAt(y,t), \partOf(x,y,t) )
 } \\
 \hline
 \end{tabular}
-\caption{Temporalized relations axioms for parthood relations. Taken from \cite{Graz} and transcribed into FOL syntax}
+\caption{Temporalized relations axioms for parthood relations. Taken
+  from \cite{Graz} and transcribed into FOL syntax. TODO
+  at-all-times-partner-exists. TODO fix according to latest bfo}
 \label{tab:fol-part-temporalized}
 \end{table}
 
