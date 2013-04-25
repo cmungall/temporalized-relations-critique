@@ -902,12 +902,184 @@ performing the conversion requires an ontology developer who has a
 strong understanding of the domain and of the logic. In my estimation
 many mistakes will be made in this process.
 
+\section{Recommendations}
+
+I provide two sets of recommendations - one for consumers of BFO, and
+the other for BFO developers.
+
+\subsection{Recommendations for consumers of BFO}
+
+Here, consumers of BFO primarily refers to developers of ontologies
+that need to make use of core relations or classes from an upper
+ontology.
+
+\begin{enumerate}
+
+\item \textbf{Do not use Temporalized Relations.} My primary
+  recommendation is that Temporalized Relations should not be used in
+  production ontologies. They may be used in experimental or
+  exploratory ontologies, or in experimental branches of production
+  ontologies, but they should not be used for the main version of a
+  production ontology. Here ``production ontology'' means any ontology
+  that satisfies the OBO Foundry criteria of having a plurality of
+  users.
+
+\item \textbf{Continue to use atemporal relations.} Ontology
+  developers should continue using the relations that they have been
+  using (largely without facing any problems) for years. The Relations
+  Ontology will continue to provide OWL Object Properties for
+  (atemporal) \partOf\ and so on. At this time, some of these
+  relations are in the BFO ID space (for example, \partOf\ has the ID
+  BFO\_0000050). Currently these are considered to be a part of RO
+  rather than BFO, despite their ID space.
+
+  The RO group will continue to support these relations
+  indefinitely. It is our hope that we will be able to provide an
+  \OBOREL\ style interpretation of these. If it at some point in the
+  future some superior alternative to the existing relations are
+  discovered, a migration path will be provided.
+  
+
+\end{enumerate}
+
+\subsection{Recommendations for the BFO group}
+
+I also provide some recommendations to the BFO group, based on my
+experience evaluating these relations.
+
+\subsubsection{Remember that the OWL version of BFO is the most
+  important}
+
+The group developing BFO OWL is a subgroup of the larger BFO
+group. However, the group as a whole should take an active interest in
+the OWL version, because for every single user of BFO, the OWL version
+is synonymous with BFO. Nobody is using BFO who is not using OWL.
+
+\subsubsection{Documentation.} More documentation on Temporalized
+Relations is required. This includes both user-level documentation
+(for example: how do I choose the right temporalized form?) and
+documentation aimed at the experienced ontology engineer.
+
+\subsubsection{Advertise limitations and problems clearly.} This
+critique has identified or explored a number of issues with TRs. Some
+of these may not have been apparent to users reading the BFO
+documentation - some were in fact not apparent to many of the members
+of the BFO team.
+
+In cases where the BFO documentation does note limitations, the
+consequences of the limitation are not made clear. For example, the
+release notes currently state that non-rigid classes are not supported
+at this time. To the average ontology developer, the explanation is
+quite opaque and the consequences of the limitation are not clear. In
+fact the consequences are not clear to experienced ontology
+engineers, as it is stated ambiguously.
+
+If BFO is to retain the trust of the community then it must be very
+clear and upfront about the weaknesses and limitations of the product
+it is pushing. The shortcomings must be described in a language the
+average BFO consumer can understand. Examples must be given.
+
+\subsubsection{Mark temporalized relations as experimental.} These
+relations should be clearly marked as experimental or exploratory. 
+
+\subsubsection{Alternate strategies.} Alternative strategies to
+adhering to \P1\ should be given due consideration. The BFO team
+should not prematurely settle on the TR solution, especially now its
+limitations have been elucidated. Alternate solutions such as those
+currently being worked on (dual interpretations; temporally qualified
+continuants)\cite{Grewe} may turn out to preserve \P1\ at less of a
+cost to the ability to BFO consumers to deliver a usable product to
+their users.
+
+\subsubsection{Justify major changes.} The TR approach, if adopted,
+would be a major change requiring lots of resources to migrate. If the
+community is to be convinced that this approach is superior, then
+clear examples of where the previous approach leads to reasoning or
+interoperability problems should be provided. Alternatively, examples
+of where the TR approach allows you to get inferences you would not
+get with the traditional approach.
+
+Currently the BFO documentation provides no such examples. The sole
+justification for the major shift is that the traditional approach
+does not yet have an agreed upon a formalluy documented way to
+interpret the OWL such that it satisfies \P1.
+
+In short, extraordinary change demands extraordinary
+justification\footnote{This advice should be heeded for other parts of
+  BFO as well, such as the unpopular process profiles}.
+
+\subsubsection{Provide a road map and migration plan.} If a promising
+alternate strategy to atemporal relations emerges, then users should
+not be expected to migrate to it if there is no roadmap indicating
+when missing features will be implemented. This would be common sense
+in software engineering; the same principles should apply to ontology
+engineering.
+
+An example of where a road map is missing is with the TR proposal. The
+release notes indicates that solutions to the lack of instantiation of
+non-rigid classes and permanent generic parthood are forthcoming, but
+there is no timeline. It is not clear if the timescape is months or
+years, or what ontology developers are expected to do in the interim
+period.
+
+The TR approach, if adopted, would require BFO consumers migrating
+away from atemporal relations to the temporalized form. This would be
+a difficult task, and users would need assistance.
+
+\subsubsection{Do a cost-benefit analysis.} The primary
+justification for the TR approach is that it satisfies \P1. The fact
+that adoption of TRs would lessen the ability of BFO consumers to
+deliver on their use cases is regarded as secondary.
+
+This is not how an engineering project should work. The costs of
+deferring on \P1\ (which the community has effectively been deferring
+for years) should be weighed against the costs inherent in the TR
+approach.
+
+A cost benefit analysis should include\footnote{http://jamesmaloneebi.blogspot.co.uk/2012/07/why-choosing-ontologies-should-not-be.html}:
+
+\begin{quotation}
+this includes aspects such as cost of training for use in development,
+cost to end users in understanding ontologies built using such
+frameworks, cost benefits measured as per metrics such as those above
+(e.g. answering competency questions) and risk of adoption (such as
+significant changes or longer term support).
+\end{quotation}
+
+
+\subsubsection{Provide tools..} If the use of a different approach
+requires additional tools for ontology editors to work effectively,
+then these should be provided, or a strategy and timeline for their
+development should be included.
+
+For example, creation of TRs involves creation of complex lattices of
+relations due to the proliferation of different temporalized
+forms. Other problems aside, adoption of TRs would require better
+tools for managing and presenting this.
+
+\subsubsection{OWL is limited by design..} The OWL
+language and associated tooling is incredibly useful in
+bioinformatics. In particular, it has proven invaluable for
+automatically classifying and finding errors in large graphs of terms
+such as the Gene Ontology.
+
+However, it is not the best language for everything. In particular,
+complex spatiotemporal reasoning may not be its forte.
+
+If it feels like overloading, it may be time to use something
+else. Work to OWL's advantages, not its strengths.
+
 
 \section{Discussion}
 
-\subsection{Keep it as simple as possible, but not simpler}
+\subsection{Complex solutions are prone to failure}
 
-Many engineers abhor solutions that appear overly baroque or complex
+In this critique I have tried to focus on the inherent logical
+problems with the TR approach, and how these can impact ontology
+modeling and the use of reasoners.
+
+An additional concern is the complexity of the approach. Many
+engineers abhor solutions that appear overly baroque or complex
 compared to the task at hand. From the point of view of the person
 proposing the complex solution, this can be frustrating and seem like
 short-sightedness on the part of the engineers. It may be tempting to
@@ -922,14 +1094,18 @@ people with expertise ranging from ontology engineering,
 bioinformatics, biology and formal logic. Most of them find the TR
 solution excessively complex, unjustified by any use case, and those
 with an understanding of the logic realize the modeling limitations
-and flawed logical underpinnings. Perhaps we are collectively
-shortsighted or missing some aspect of the bigger picture? I think
-this unlikely, but even if we take this to be the case, the fact that
-such a large section of the bio-ontology community finds the solution
-to be so problematic places an onus on the proponents of TRs to work
-especially hard to justify the complexity.
+and flawed logical underpinnings.
 
-\subsection{BFO principles 1 and the strengths and weaknesses of OWL}
+Perhaps this group of us are collectively shortsighted or missing some
+aspect of the bigger picture? I think this unlikely, but even if we
+take this to be the case, the fact that such a large section of the
+bio-ontology community finds the solution to be so problematic places
+an onus on the proponents of TRs to work especially hard to justify
+the complexity. If this concern is ignored, then engineers will
+naturally migrate to a simpler solution that allows them to deliver a
+working product.
+
+\subsection{BFO principle 1 and the strengths and weaknesses of OWL}
 
 One of the stated goals of the BFO2 OWL project is to have a clear FOL
 reading of the OWL according to BFO (\P1). This is a laudable aim but
@@ -942,107 +1118,24 @@ this kind of perfection. OWL is, by design, more restricted than
 first-order logic (which is itself arguably inadequate to model
 biology in anything other than a simplistic fashion). These
 restrictions make it more suited to certain kinds of tasks than
-others. In my experience OWL is tremendously useful for building and
-maintaining graphs of terms that model the world in a very simple (but
-very useful) fashion. We should be wary of attempts to over-extend
-these useful approximations. Perhaps it is the case that attempting a
-perfect FOL reading of an OWL version of the BFO2 spec is simply using
-OWL in the wrong way? As demonstrated in this critique, complicating
-the OWL representation \emph{decreases} the utility of OWL reasoning.
+others. OWL is tremendously useful for building and maintaining graphs
+of terms that model the world in a very simple (but very useful)
+fashion. We should be wary of attempts to over-extend these useful
+approximations. Perhaps it is the case that attempting a perfect FOL
+reading of an OWL version of the BFO2 spec is simply using OWL in the
+wrong way? As demonstrated in this critique, complicating the OWL
+representation \emph{decreases} the utility of OWL reasoning.
 
-Whilst I would argue that we should be prepared for the fact that the
-OWL approximation may not have a perfect reading in terms of the BFO2
-FOL, there may be reasons to be optimistic, and that this reading can
-be achieved without the sacrifices of the TR approach. For example, it
-may be possible to have a dual interpretation, or to use an approach
-called temporally qualified continuants (TQCs). These may have the
-benefit of being more closely aligned with the original \OBOREL\
-paper. This is outside the scope of this paper, see \cite{Grewe} for
-details.
-
-\subsection{Recommendations}
-
-Based on my evaluation I make the following three primary
-recommendations:
-
-\begin{enumerate}
-
-\item \textbf{Do not use.} My primary recommendation is that
-  Temporalized Relations should not be used as a replacement for
-  existing atemporal relations. Ontologies should not migrate their
-  production branch to TRs.
-
-\item \textbf{Continue using atemporal relations.} Ontology developers
-  should continue using the relations that they have been using
-  successfully for years. These relations should be given stable
-  identifiers and be resolvable. If at some point in the future a
-  better approach becomes available, then this can be adopted, and the
-  old relations obsoleted. But this should only happen when the new
-  approach is demonstrably superior.
-
-\item \textbf{Change priorities.} Dogma should not trump the
-  requirements of users of ontologies. A clear reading of the OWL in
-  terms of the FOL (\P1) is laudable but may have to be postponed.
-
-\end{enumerate}
-
-I am not against the continued investigation of TRs as a long term
-strategy. My additional recommendations here are:
-
-\subsubsection{Mark as experimental.} These relations should be clearly
-marked as experimental.
-
-\subsubsection{Documentation.} More documentation is required. This
-includes both user-level documentation (for example: how do I choose
-the right temporalized form?) and documentation aimed at the
-experienced engineer.
-
-\subsubsection{Alternate strategies.} Alternative strategies must be
-given due consideration.
-
-\subsubsection{Justify major changes.} If a strategy emerges that
-seems promising, yet that strategy requires major changes to
-ontologies, then these changes must be justified in terms of concrete
-benefits of the new approach. Concrete problems with the existing
-approach should be demonstrated.
-
-\subsubsection{Clearly indicate shortcomings..} In a language that a
-typical ontology developer can understand.
-
-\subsubsection{Provide a road map.} If a promising alternate strategy
-to atemporal relations emerges, then users should not be expected to
-migrate to it if there is no road map indicating when missing features
-will be implemented. This would be common sense in software
-engineering; the same principles should apply to ontology engineering.
-An example of where a road map is missing is with the TR proposal. The
-release notes indicates that solutions to the lack of instantiation of
-non-rigid classes and permanent generic parthood are forthcoming, but
-there is no timeline. It is not clear if the timescape is months or
-years, or what ontology developers are expected to do in the interim
-period.
-
-\subsubsection{Provide a migration plan..} An alternate strategy must
-come with a migration plan. In my experience, migration from legacy
-systems (for example, the transition from obo-format to OWL)i is
-rarely smooth, the process needs to be actively managed.
-
-\subsubsection{Perform a cost-benefit analysis for adopting the
-  solution..}
-See\footnote{http://jamesmaloneebi.blogspot.co.uk/2012/07/why-choosing-ontologies-should-not-be.html}.
-
-
-\subsubsection{Take advantage of FOL..} If the primary motivating
-factor for a new approach is an FOL reading then the success of the
-approach should be determined based on some machine-readable FOL.
-
-\subsubsection{Provide tools..} If the use of a different approach
-requires additional tools for ontology editors to work effectively,
-then provide them, rather than promise them.
-
-\subsubsection{Remember the limitations of OWL..} Much as I love OWL,
-it isn't the right solution for everything. If you appear to be
-overloading OWL, consider if you might be better off using something
-different.
+The most sensible strategy is to \emph{defer} on \P1. It may be the
+case that satisfying \P1\ cannot be done whilst retaining an OWL model
+that is usable. Whilst we should be prepared for this, there is in
+fact grouns for optimism. It may be the case that there are
+alternatives to TRs that satisfy \P1\ without the same sacrifices For
+example, it may be possible to have a dual interpretation, or to use
+an approach called temporally qualified continuants (TQCs). These may
+have the benefit of being more closely aligned with the original
+\OBOREL\ paper. This is outside the scope of this paper, see
+\cite{Grewe} for details.
 
 \section{Conclusions}
 
